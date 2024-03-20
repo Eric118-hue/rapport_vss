@@ -1,14 +1,14 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import * as XLSX from 'xlsx';
-import { Table } from "../table/table";
+import { Tables } from "../table/table";
 import { MZONE_type, UpdateData, VSS_Type } from "../../@types/updateData";
 import { VitogazTable } from "../table/vssTable";
-import { Box, Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 
 export const Excel = () => {
     const [vss, setVss] = useState<VSS_Type[] >([])
     const [mzone, setMzone] = useState<MZONE_type[] | null >(null)
-
+    const [error, setError] = useState(false)
     const [data, setData] = useState<UpdateData>({
       IdClient: [],
       Imma: [],
@@ -92,6 +92,14 @@ export const Excel = () => {
           setMzone(jsonData2)
         }
 
+        if (data.IdClient.length <= 0) {
+          setError(true)
+        } else {
+          setError(false)
+        }
+
+        console.log(error)
+        console.log(data.IdClient.length)
 
     }
 
@@ -117,9 +125,14 @@ export const Excel = () => {
       }
 
       {
-        data.IdClient.length > 0 && <Table  data={data}/>
+        data.IdClient.length > 0 && <Tables  data={data}/>
       }
       
+      {
+        error && <Typography variant="h1" component="h2" color='error'>
+                  Error file uploaded
+                </Typography>
+      }
 
 
     </>

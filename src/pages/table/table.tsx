@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { TableProps, UpdateData } from '../../@types/updateData'
-import { DownloadTableExcel } from 'react-export-table-to-excel'
-import { Box, Button } from '@mui/material'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { TableProps, UpdateData, VSS_Type } from '../../@types/updateData'
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material'
 import * as XLSX from 'xlsx'
 
-export const Table = ({data}: TableProps) => {
+export const Tables = ({data}: TableProps) => {
     const  [datas, setDatas] = useState(data)
-    const tableRef = useRef(null)
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(5)
 
     useEffect(() => {
         if (data) {
@@ -52,45 +52,77 @@ export const Table = ({data}: TableProps) => {
 
     }, [data])
 
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage:number) => {
+        /* event in params is required to avoid the error in pagination */
+        setPage(newPage);
+    };
+    
+    const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
     const handleExport = () => {
+        const formattedData = datas.IdClient.map((id: string, index: number) => ({
+            IdClient: id,
+            Imma: datas.Imma[index],
+            Trsp: datas.Trsp[index],
+            longitude: datas.longitude[index],
+            latitude: datas.latitude[index],
+            altitude: datas.altitude[index],
+            speed: datas.speed[index],
+            etat: datas.etat[index],
+            Last_online_sur_VSS: datas.Last_online_sur_VSS[index],
+            commentaire: datas.commentaire[index]
+        }));
+      
+        const ws = XLSX.utils.json_to_sheet(formattedData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+        XLSX.writeFile(wb, "data.xlsx");
         
     }
   return (
     <>
-        <DownloadTableExcel
-            filename="users table"
-            sheet="users"
-            currentTableRef={tableRef.current}
-        >
-            <Button variant='contained' sx={{mt: 2}}>Export LPSA</Button>
-        </DownloadTableExcel>
         <Box sx={{display: 'flex', justifyContent: 'end'}}>
-            <Button sx={{mb: 2, mr: 4}} color='success' variant='contained' onClick={handleExport}>Export LPSA</Button>
+            <Button sx={{mb: 2, mr: 4, mt:2 }} color='success' variant='contained' onClick={handleExport}>Export LPSA</Button>
         </Box>
-        <table ref={tableRef} style={{ borderCollapse: 'collapse', marginTop: '2rem' }}>
-            <thead >
-                <tr>
-                    {Object.keys(datas).map((key) => (
-                        <th key={key} style={{border: '1px solid black'}}>{key}</th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                {datas.IdClient.map((_: any, index:any) => (
-                    <tr key={index}>
+        <TableContainer>
+            <Table>
+                <TableHead >
+                    <TableRow>
                         {Object.keys(datas).map((key) => (
-                            <td key={key} style={{border: '1px solid black'}}>
-                                {
-                                    key === 'Last_online_sur_VSS' ? datas[key][index] : 
-                                    key === 'date_mzone' ? datas[key][index] :
-                                    datas[key][index]
-                                }
-                            </td>
+                            <TableCell key={key} >{key}</TableCell>
                         ))}
-                    </tr>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {(rowsPerPage > 0
+                        ? datas.IdClient.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        : datas.IdClient
+                    ).map((_: VSS_Type, index: number) => (
+                        <TableRow key={index}>
+                            {Object.keys(datas).map((key) => (
+                                <TableCell key={key} >
+                                    {key === 'Last_online_sur_VSS' ? datas[key][index + page * rowsPerPage] : 
+                                    key === 'date_mzone' ? datas[key][index + page * rowsPerPage] :
+                                    datas[key][index + page * rowsPerPage]}
+                                </TableCell>
+                            ))}
+                        </TableRow>
                 ))}
-            </tbody>
-        </table> 
+                </TableBody>
+            </Table>
+        </TableContainer> 
+        <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={datas.IdClient.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+        />
     </>
   )
 }
