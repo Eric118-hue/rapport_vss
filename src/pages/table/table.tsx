@@ -79,7 +79,7 @@ export const Tables = ({data}: TableProps) => {
         const ws = XLSX.utils.json_to_sheet(formattedData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-        XLSX.writeFile(wb, "data.xlsx");
+        XLSX.writeFile(wb, "Lpsa.xlsx");
         
     }
   return (
