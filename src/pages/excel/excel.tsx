@@ -1,10 +1,12 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
 import * as XLSX from 'xlsx';
 import { Table } from "../table/table";
 import { MZONE_type, UpdateData, VSS_Type } from "../../@types/updateData";
+import { VitogazTable } from "../table/vssTable";
+import { Box, Button } from "@mui/material";
 
 export const Excel = () => {
-    const [vss, setVss] = useState<VSS_Type[] | null>(null)
+    const [vss, setVss] = useState<VSS_Type[] >([])
     const [mzone, setMzone] = useState<MZONE_type[] | null >(null)
 
     const [data, setData] = useState<UpdateData>({
@@ -20,10 +22,17 @@ export const Excel = () => {
       date_mzone: [],
       commentaire: []
     })
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
       newData()
+
+      console.log('vss length ', vss.length)
     }, [vss, mzone])
+
+    const handleButtonClick = () => {
+      if(fileInputRef.current !== null) fileInputRef.current.click();
+    }
 
     const newData = () => {
       let updatedData: UpdateData = {
@@ -85,18 +94,34 @@ export const Excel = () => {
 
 
     }
+
+     
   
 
   return (
     <>
-     <input
-      type="file"
-      accept=".xlsx, .xls"
-      multiple
-      onChange={(e) => handleFileUpload(e)}
-      />
+      <Button variant="outlined" onClick={handleButtonClick} sx={{mt: 2, ml: 2}}>
+        Import file
+        <input
+          type="file"
+          accept=".xlsx, .xls"
+          multiple
+          onChange={(e) => handleFileUpload(e)}
+          ref={fileInputRef}
+          style={{display: 'none'}}
+          />
+      </Button>
 
-      <Table  data={data}/>
+      {
+        vss.length > 0 && <VitogazTable data={vss} />
+      }
+
+      {
+        data.IdClient.length > 0 && <Table  data={data}/>
+      }
+      
+
+
     </>
   )
 }

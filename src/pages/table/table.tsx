@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { TableProps, UpdateData } from '../../@types/updateData'
 import { DownloadTableExcel } from 'react-export-table-to-excel'
+import { Box, Button } from '@mui/material'
+import * as XLSX from 'xlsx'
 
 export const Table = ({data}: TableProps) => {
     const  [datas, setDatas] = useState(data)
@@ -50,7 +52,9 @@ export const Table = ({data}: TableProps) => {
 
     }, [data])
 
-    
+    const handleExport = () => {
+        
+    }
   return (
     <>
         <DownloadTableExcel
@@ -58,8 +62,11 @@ export const Table = ({data}: TableProps) => {
             sheet="users"
             currentTableRef={tableRef.current}
         >
-            <button>EXcel</button>
+            <Button variant='contained' sx={{mt: 2}}>Export LPSA</Button>
         </DownloadTableExcel>
+        <Box sx={{display: 'flex', justifyContent: 'end'}}>
+            <Button sx={{mb: 2, mr: 4}} color='success' variant='contained' onClick={handleExport}>Export LPSA</Button>
+        </Box>
         <table ref={tableRef} style={{ borderCollapse: 'collapse', marginTop: '2rem' }}>
             <thead >
                 <tr>
