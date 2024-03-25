@@ -9,6 +9,7 @@ export const Excel = () => {
     const [vss, setVss] = useState<VSS_Type[] >([])
     const [mzone, setMzone] = useState<MZONE_type[] | null >(null)
     const [error, setError] = useState(false)
+    const [errorLengthFile, setErrorLengthFile] = useState<boolean>(false)
     const [data, setData] = useState<UpdateData>({
       IdClient: [],
       Imma: [],
@@ -71,10 +72,17 @@ export const Excel = () => {
 
     const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files 
-
+        
         if (!files || files.length !== 2) {
-            alert('Please select 2 excel files')
+            setErrorLengthFile(true)
             return
+        }
+        if (files.length === 2) {
+          if (files[0].name !== 'dernier_pos.xlsx'  || !files[1].name.includes('VehicleCommunication')) {
+            setError(true)
+          } else {
+            setError(false)
+          }
         }
         if (files[0].name === 'dernier_pos.xlsx') {
           const data1 = await files[0].arrayBuffer()
@@ -91,14 +99,8 @@ export const Excel = () => {
           console.log('json ', jsonData2)
           setMzone(jsonData2)
         }
+        setErrorLengthFile(false)
 
-        if (data.IdClient.length <= 0) {
-          setError(true)
-        } else {
-          setError(false)
-        }
-
-        console.log(error)
         console.log(data.IdClient.length)
 
     }
@@ -131,6 +133,11 @@ export const Excel = () => {
       {
         error && <Typography variant="h1" component="h2" color='error'>
                   Error file uploaded
+                </Typography>
+      }
+       {
+        errorLengthFile && <Typography variant="h1" component="h2" color='error'>
+                  Please select 2 excel files
                 </Typography>
       }
 
