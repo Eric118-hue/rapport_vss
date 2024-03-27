@@ -2,6 +2,7 @@ import { AppBar, IconButton, Toolbar, Typography } from '@mui/material'
 import { Menu } from '@mui/icons-material'
 import './App.css'
 import { Excel } from './pages/excel/excel'
+import { ProvideToken } from './pages/login/provideToken'
 
 function App() {
 
