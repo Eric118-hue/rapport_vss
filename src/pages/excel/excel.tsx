@@ -4,6 +4,7 @@ import { Tables } from "../table/table";
 import { MZONE_type, UpdateData, VSS_Type } from "../../@types/updateData";
 import { VitogazTable } from "../table/vssTable";
 import { Button, Typography } from "@mui/material";
+import { useLoadingContext } from "../context/dataContext";
 
 export const Excel = () => {
     const [vss, setVss] = useState<VSS_Type[] >([])
@@ -23,11 +24,13 @@ export const Excel = () => {
       commentaire: []
     })
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const { apiData } = useLoadingContext();
 
     useEffect(() => {
+      // setVss(apiData)
       newData()
 
-      console.log('vss length ', vss.length)
+      console.log('data ', apiData)
     }, [vss, mzone])
 
     const handleButtonClick = () => {
@@ -73,7 +76,7 @@ export const Excel = () => {
         const files = e.target.files 
 
         if (!files || files.length !== 2) {
-            alert('Please select 2 excel files')
+            alert('Please select  excel files')
             return
         }
         if (files[0].name === 'dernier_pos.xlsx') {
@@ -81,6 +84,7 @@ export const Excel = () => {
           const workbook = XLSX.read(data1)
           const worksheet = workbook.Sheets[workbook.SheetNames[0]]
           const jsonData1: VSS_Type[] = XLSX.utils.sheet_to_json(worksheet)
+          console.log('rrrr ' ,jsonData1)
           setVss(jsonData1)
         } 
         if (files[1].name.includes('VehicleCommunication')) {
@@ -98,8 +102,8 @@ export const Excel = () => {
           setError(false)
         }
 
-        console.log(error)
-        console.log(data.IdClient.length)
+        // console.log(error)
+        // console.log(data.IdClient.length)
 
     }
 
