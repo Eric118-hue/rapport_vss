@@ -13,6 +13,16 @@ export type VSS_Type = {
 
 }
 
+export type VSS = {
+    deviceno: string;
+    devicename: string;
+    fleetname: string;
+    longitude: string ;
+    latitude: string ;
+    altitude: string ;
+    speed: string ;
+    dtu: string;
+}
 export type MZONE_type = {
     __EMPTY_3 : string;
     __EMPTY_8: string

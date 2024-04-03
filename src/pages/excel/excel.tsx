@@ -1,13 +1,13 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import * as XLSX from 'xlsx';
 import { Tables } from "../table/table";
-import { MZONE_type, UpdateData, VSS_Type } from "../../@types/updateData";
+import { MZONE_type, UpdateData, VSS, VSS_Type } from "../../@types/updateData";
 import { VitogazTable } from "../table/vssTable";
 import { Button, Typography } from "@mui/material";
 import { useLoadingContext } from "../context/dataContext";
 
 export const Excel = () => {
-    const [vss, setVss] = useState<VSS_Type[] >([])
+    const [vss, setVss] = useState<VSS[]>([])
     const [mzone, setMzone] = useState<MZONE_type[] | null >(null)
     const [error, setError] = useState(false)
     const [data, setData] = useState<UpdateData>({
@@ -20,6 +20,7 @@ export const Excel = () => {
       speed: [],
       etat: [],
       Last_online_sur_VSS: [],
+      dtu: [],
       date_mzone: [],
       commentaire: []
     })
@@ -30,7 +31,8 @@ export const Excel = () => {
       // setVss(apiData)
       newData()
 
-      console.log('data ', apiData)
+      if (apiData !== null) setVss(apiData)
+      console.log('data context dd   ', vss)
     }, [vss, mzone])
 
     const handleButtonClick = () => {
@@ -48,47 +50,53 @@ export const Excel = () => {
         speed: [],
         etat: [],
         Last_online_sur_VSS: [],
+        dtu: [],
         date_mzone: [],
         commentaire: []
       };
       
-      vss?.forEach((vs: VSS_Type) => {
+      vss?.forEach((vs: VSS) => {
         mzone?.forEach((mz: MZONE_type) => {
-          if (mz['__EMPTY_3'] === vs['Imma']) {
+          if (mz['__EMPTY_3'] === vs['devicename']) {
             Object.keys(updatedData).forEach((key) => {
               if (updatedData.hasOwnProperty(key)) {
-                if (key === 'Last_online_sur_VSS') {
-                  updatedData[key].push(vs['Last_online_sur_VSS']);
+                if (key === 'dtu') {
+                  updatedData[key].push(vs['dtu']);
                 } else if (key === 'date_mzone') {
                   updatedData[key].push(mz['__EMPTY_8']);
                 } else {
-                  updatedData[key as keyof UpdateData].push(vs[key as keyof VSS_Type]);
+                  updatedData[key as keyof UpdateData].push(vs[key as keyof VSS]);
                 }
               }
             });
           }
         })
       })
+      console.log(' ato ne ', vss)
       setData(updatedData)
+      console.log('update ', updatedData)
+
+
+
     }
 
     const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files 
 
-        if (!files || files.length !== 2) {
+        if (!files || files.length !== 1) {
             alert('Please select  excel files')
             return
         }
-        if (files[0].name === 'dernier_pos.xlsx') {
-          const data1 = await files[0].arrayBuffer()
-          const workbook = XLSX.read(data1)
-          const worksheet = workbook.Sheets[workbook.SheetNames[0]]
-          const jsonData1: VSS_Type[] = XLSX.utils.sheet_to_json(worksheet)
-          console.log('rrrr ' ,jsonData1)
-          setVss(jsonData1)
-        } 
-        if (files[1].name.includes('VehicleCommunication')) {
-          const data2 = await files[1].arrayBuffer()
+        // if (files[0].name === 'dernier_pos.xlsx') {
+        //   const data1 = await files[0].arrayBuffer()
+        //   const workbook = XLSX.read(data1)
+        //   const worksheet = workbook.Sheets[workbook.SheetNames[0]]
+        //   const jsonData1: VSS_Type[] = XLSX.utils.sheet_to_json(worksheet)
+        //   console.log('rrrr ' ,jsonData1)
+        //   setVss(jsonData1)
+        // } 
+        if (files[0].name.includes('VehicleCommunication')) {
+          const data2 = await files[0].arrayBuffer()
           const workbook2 = XLSX.read(data2)
           const wks = workbook2.Sheets[workbook2.SheetNames[0]]
           const jsonData2: MZONE_type[] = XLSX.utils.sheet_to_json(wks)
@@ -102,7 +110,7 @@ export const Excel = () => {
           setError(false)
         }
 
-        // console.log(error)
+        console.log('vss ', vss)
         // console.log(data.IdClient.length)
 
     }
@@ -124,13 +132,13 @@ export const Excel = () => {
           />
       </Button>
 
-      {
+      {/* {
         vss.length > 0 && <VitogazTable data={vss} />
-      }
-
+      } */}
+{/* 
       {
-        data.IdClient.length > 0 && <Tables  data={data}/>
-      }
+        // data.IdClient.length > 0 && <Tables  data={data}/>
+      } */}
       
       {
         error && <Typography variant="h1" component="h2" color='error'>

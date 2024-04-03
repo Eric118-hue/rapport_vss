@@ -2,16 +2,16 @@ export type Data = {
     deviceno: string;
     devicename: string;
     fleetname: string;
-    sim: string | number;
-    devicetype: string;
-    createtime: string | Date; 
-    modifytime: string | Date;
-    imei: string | number;
-    longitude: number;
-    latitude: number;
-    altitude: number;
+    // sim: string | number;
+    // devicetype: string;
+    // createtime: string | Date; 
+    // modifytime: string | Date;
+    // imei: string | number;
+    longitude: string;
+    latitude: string;
+    altitude: string;
     speed: string;
-    dtu: string | Date
+    dtu: string 
 }
 
 export interface LoadingContextType {

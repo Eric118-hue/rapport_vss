@@ -1,5 +1,5 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { TableProps, VSS_Type } from '../../@types/updateData';
+import { TableProps, VSS, VSS_Type } from '../../@types/updateData';
 import { useEffect, useState } from 'react';
 import { Box, Button } from '@mui/material';
 import * as XLSX from 'xlsx'
@@ -17,7 +17,7 @@ export const VitogazTable = ({data}: TableProps) => {
     {field: 'commentaire', headerName: 'commentaire', sortable: false},
   ])
 
-  const [rows, setRows] = useState(data?.filter((car: VSS_Type) => car.IdClient.includes('Vit')))
+  const [rows, setRows] = useState(data?.filter((car: VSS) => car.deviceno.includes('Vit')))
 
   useEffect(() => {
     let vit= data?.filter((car: VSS_Type) => car.IdClient.includes('Vit'))
