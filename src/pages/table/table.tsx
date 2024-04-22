@@ -54,6 +54,7 @@ export const Tables = ({data}: TableProps) => {
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage:number) => {
         /* event in params is required to avoid the error in pagination */
+        console.log(event)
         setPage(newPage);
     };
     
