@@ -78,13 +78,13 @@ export const Excel = () => {
             return
         }
         if (files.length === 2) {
-          if (files[0].name !== 'dernier_pos.xlsx'  || !files[1].name.includes('VehicleCommunication')) {
+          if (!files[0].name.includes('dernier_pos')  || !files[1].name.includes('VehicleCommunication')) {
             setError(true)
           } else {
             setError(false)
           }
         }
-        if (files[0].name === 'dernier_pos.xlsx') {
+        if (files[0].name.includes('dernier_pos')) {
           const data1 = await files[0].arrayBuffer()
           const workbook = XLSX.read(data1)
           const worksheet = workbook.Sheets[workbook.SheetNames[0]]
