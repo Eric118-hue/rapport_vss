@@ -46,15 +46,13 @@ export const Tables = ({data}: TableProps) => {
             });
 
             setDatas(newData);
-            console.log('cmt ', datas)
         }
-        console.log('atep ' ,data)
 
     }, [data])
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage:number) => {
         /* event in params is required to avoid the error in pagination */
-        console.log(event)
+        event?.preventDefault()
         setPage(newPage);
     };
     
