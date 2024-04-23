@@ -5,7 +5,7 @@ import { Box, Button } from '@mui/material';
 import * as XLSX from 'xlsx'
 
 export const VitogazTable = ({data}: TableProps) => {
-  const [columns, setColumns] = useState<GridColDef[]>([
+  const [columns] = useState<GridColDef[]>([
     {field: 'IdClient', headerName: 'IdClient', sortable: false},
     {field: 'Imma', headerName: 'Imma', sortable: false},
     {field: 'Trsp', headerName: 'Trsp', sortable: false},
